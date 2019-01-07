@@ -1,5 +1,5 @@
 {
-  "demo.json": {
-    "dqn_cartpole": "dev"
+  "EcGlass.json": {
+    "dqn_EcGlass": "train"
   }
 }

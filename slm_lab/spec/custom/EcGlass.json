@@ -1,0 +1,86 @@
+{
+  "dqn_EcGlass": {
+    "agent": [{
+      "name": "DQN",
+      "algorithm": {
+        "name": "DQN",
+        "action_pdtype": "Argmax",
+        "action_policy": "boltzmann",
+//        no info on rate_decay and periodic_decay
+        "action_policy_update": "linear_decay",
+        "explore_var_start": 1.0,
+        "explore_var_end": 0.0001,
+        "explore_anneal_epi": 285,
+        "gamma": 0.90,
+        "training_batch_epoch": 1,
+        "training_epoch": 3499,
+        "training_frequency": 3499,
+        "training_min_timestep": 64,
+        "normalize_state": false
+      },
+      "memory": {
+        "name": "PrioritizedReplay",
+        "batch_size": 64,
+        "max_size": 100000,
+        "use_cer": true
+      },
+      "net": {
+        "type": "MLPNet",
+        "hid_layers": [512,256,128],
+        "hid_layers_activation": "relu",
+        "clip_grad": false,
+        "clip_grad_val": 1.0,
+        "loss_spec": {
+          "name": "MSELoss"
+        },
+        "optim_spec": {
+          "name": "Adam",
+          "lr": 0.002
+        },
+        "lr_decay": "rate_decay",
+        "lr_decay_frequency": 3499,
+        "lr_decay_min_timestep": 3499,
+        "lr_anneal_timestep": 1000000,
+        "update_type": "polyak",
+        "update_frequency": 1,
+        "polyak_coef": 0,
+        "gpu": true
+      }
+    }],
+    "env": [{
+      "name": "ECglass-v0",
+      "max_timestep": null,
+      "max_episode": 572,
+      "save_epi_frequency": 50
+    }],
+    "body": {
+      "product": "outer",
+      "num": 1
+    },
+    "meta": {
+      "distributed": false,
+      "graph_x": "epi",
+      "max_trial": 1,
+      "max_session": 1,
+      "search": "RandomSearch",
+      "resources": {
+        "num_cpus": 6,
+        "num_gpus": 1
+      }
+    },
+    "search": {
+      "agent": [{
+        "algorithm": {
+          "gamma__uniform": [0.95, 0.99],
+	  "action_policy": ["boltzmann","epsilon_greedy"]
+        },
+        "net": {
+          "optim_spec": {
+            "lr__uniform": [0.001, 0.01],
+            "hid_layers_activation__choice": ["relu", "sigmoid"]
+          }
+        }
+      }]
+    }
+  }
+}
